@@ -146,11 +146,12 @@ exports.registerProperty = (req, res, next) => {
 };
 //Ver detalle del local
 exports.viewProperty = (req, res, next) => {
-    console.log(req.params.id)
+    console.log('Hola')
+    console.log(req.params.propertyId)
     const sessionUser = req.session.currentUser || req.user;
     if (sessionUser) {
         const p1 = Customer.findById(sessionUser._id);
-        const p2 = Property.findById(req.params.id);
+        const p2 = Property.findById(req.params.propertyId);
         Promise.all([p1, p2])
             .then((resultados) => {
                 const favourites = resultados[0].favourites;
@@ -186,17 +187,18 @@ exports.viewProperty = (req, res, next) => {
                     }
                 });
                 console.log(property.openingHours[0].openingTimes[0]);
-                res.render("property/property-details", {
-                    property: property,
-                    title: `${property.name} | KOKOMO`,
-                    user: resultados[0],
-                    favourites: favourites,
-                    openingDay: formatOpening,
-                    closingDay: formatClosing,
-                    weekDays: weekDaysFormat,
-                    openingTime: property.openingHours[0].openingTimes[0].openingTime,
-                    closingTime: property.openingHours[0].openingTimes[0].closingTime,
-                });
+                res.status(200).json(property);
+                // res.render("property/property-details", {
+                //     property: property,
+                //     title: `${property.name} | KOKOMO`,
+                //     user: resultados[0],
+                //     favourites: favourites,
+                //     openingDay: formatOpening,
+                //     closingDay: formatClosing,
+                //     weekDays: weekDaysFormat,
+                //     openingTime: property.openingHours[0].openingTimes[0].openingTime,
+                //     closingTime: property.openingHours[0].openingTimes[0].closingTime,
+                // });
             })
             .catch((error) => {
                 console.log("Error: ", error);
@@ -236,16 +238,17 @@ exports.viewProperty = (req, res, next) => {
                     }
                 });
                 console.log(property.openingHours[0].openingTimes[0]);
-                res.render("property/property-details", {
-                    property: property,
-                    title: `${property.name} | KOKOMO`,
-                    openingDay: formatOpening,
-                    closingDay: formatClosing,
-                    weekDays: weekDaysFormat,
-                    openingTime: property.openingHours[0].openingTimes[0].openingTime,
-                    closingTime: property.openingHours[0].openingTimes[0].closingTime,
-                    layout: 'layout-nouser'
-                });
+                res.status(200).json(property);
+                // res.render("property/property-details", {
+                //     property: property,
+                //     title: `${property.name} | KOKOMO`,
+                //     openingDay: formatOpening,
+                //     closingDay: formatClosing,
+                //     weekDays: weekDaysFormat,
+                //     openingTime: property.openingHours[0].openingTimes[0].openingTime,
+                //     closingTime: property.openingHours[0].openingTimes[0].closingTime,
+                //     layout: 'layout-nouser'
+                // });
             })
             .catch((error) => {
                 console.log("Error: ", error);
@@ -344,33 +347,33 @@ exports.saveProperty = (req, res, next) => {
 //Añadir un favorito
 exports.loveProperty = (req, res, next) => {
     const sessionUser = req.session.currentUser || req.user;
-    if(sessionUser){
+    if (sessionUser) {
         Property.findById(req.params.id)
-        .then((resultado) => {
-            return Customer.update({
-                _id: sessionUser._id,
-                favourites: {
-                    $ne: resultado._id,
-                },
-            }, {
-                $addToSet: {
-                    favourites: resultado._id,
-                },
-            }, {
-                new: true,
+            .then((resultado) => {
+                return Customer.update({
+                    _id: sessionUser._id,
+                    favourites: {
+                        $ne: resultado._id,
+                    },
+                }, {
+                    $addToSet: {
+                        favourites: resultado._id,
+                    },
+                }, {
+                    new: true,
+                });
+            })
+            .then((customer) => {
+                console.log("Usuario actualizado", customer);
+                res.redirect("back");
+            })
+            .catch((error) => {
+                console.log("Error: ", error);
             });
-        })
-        .then((customer) => {
-            console.log("Usuario actualizado", customer);
-            res.redirect("back");
-        })
-        .catch((error) => {
-            console.log("Error: ", error);
-        });
     } else {
         res.redirect(`/property/${req.params.id}`);
     }
-    
+
 };
 //Añadir comentario
 exports.addComment = (req, res) => {
