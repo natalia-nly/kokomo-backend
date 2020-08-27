@@ -18,13 +18,14 @@ const randomAvatar = () => {
 };
 //Registrar el customer en BBDD
 exports.registerCustomer = (req, res, next) => {
+  console.log(req.body)
   const {
     username,
-    telephone,
+    telNumber,
     email,
     password
   } = req.body;
-  if (!username || !telephone || !email || !password) {
+  if (!username || !telNumber || !email || !password) {
     res.status(400).json({ message: 'Necesitas completar todos los campos para crear tu cuenta' });
     return;
   }
@@ -45,7 +46,7 @@ exports.registerCustomer = (req, res, next) => {
       return Customer.create({
         username,
         email,
-        telNumber: telephone,
+        telNumber: telNumber,
         avatar: randomAvatar(),
         passwordHash: hashedPassword,
       });
@@ -70,11 +71,11 @@ exports.registerCustomer = (req, res, next) => {
 exports.registerOwner = (req, res, next) => {
   const {
     username,
-    telephone,
+    telNumber,
     email,
     password
   } = req.body;
-  if (!username || !telephone || !email || !password) {
+  if (!username || !telNumber || !email || !password) {
     res.status(400).json({ message: 'Necesitas completar todos los campos para crear tu cuenta' });
     return;
   }
@@ -95,7 +96,7 @@ exports.registerOwner = (req, res, next) => {
       return Customer.create({
         username,
         email,
-        telNumber: telephone,
+        telNumber: telNumber,
         avatar: randomAvatar(),
         passwordHash: hashedPassword,
         owner: true,
