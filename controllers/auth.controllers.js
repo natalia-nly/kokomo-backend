@@ -121,6 +121,7 @@ exports.registerOwner = (req, res, next) => {
 
 //Logearse
 exports.login = (req, res, next) => {
+  console.log(req.body)
   passport.authenticate('local', (err, theUser, failureDetails) => {
       if (err) {
           res.status(500).json({ message: 'Something went wrong authenticating user' });
