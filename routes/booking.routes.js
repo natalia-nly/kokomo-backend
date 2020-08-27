@@ -3,7 +3,7 @@ const router  = express.Router();
 const bookingController = require('../controllers/booking.controllers');
 
 //Creación del booking
-router.post('/booking/:bookingId', bookingController.createBooking);
+router.post('/booking/:scheduleId', bookingController.createBooking);
 //Ver bookings
 router.get("/my-bookings", bookingController.myBookings);
 //Detalles del Booking
