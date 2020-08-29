@@ -17,7 +17,7 @@ const propertySchema = new Schema({
     },
     openingHours: [{
          openingDays: {
-             openingDay: Date,
+            openingDay: Date,
             closingDay: Date
         },
        weekDays: [Number],

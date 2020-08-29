@@ -16,7 +16,7 @@ router.get("/logout", authController.logout);
 router.get('/loggedin', authController.loggedIn);
 // LOGIN SOCIAL
 router.get(
-  "/auth/google",
+  "/google",
   passport.authenticate("google", {
     scope: [
       "https://www.googleapis.com/auth/userinfo.profile",
@@ -25,10 +25,10 @@ router.get(
   })
 );
 router.get(
-  "/auth/google/callback",
+  "/google/callback",
   passport.authenticate("google", {
-    successRedirect: "/profile",
-    failureRedirect: "/", // hacia dónde debe ir si falla?
+    successRedirect: "http://localhost:3000/profile",
+    failureRedirect: "http://localhost:3000/login", // hacia dónde debe ir si falla?
   })
 );
 
