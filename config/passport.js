@@ -4,6 +4,7 @@ const bcrypt        = require('bcryptjs'); // !!!
 const passport      = require('passport');
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
+
 passport.serializeUser((loggedInUser, cb) => {
   cb(null, loggedInUser._id);
 });
@@ -49,6 +50,7 @@ passport.use(
       console.log("Google account details:", profile);
       User.findOne({ googleID: profile.id }).then(user => {
           if (user) {
+            console.log(user)
             done(null, user);
             return;
           }
@@ -59,6 +61,7 @@ passport.use(
             email: profile.emails[0].value
            })
             .then(newUser => {
+              console.log(newUser)
               done(null, newUser);
             })
             .catch(err => done(err)); // closes User.create()
