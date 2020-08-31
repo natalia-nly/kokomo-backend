@@ -32,7 +32,7 @@ function formattedDate(d) {
 }
 //Creación del Booking
 exports.createBooking = (req, res, next) => {
-  console.log("Schedule ID: ", req.params.id);
+  console.log("Schedule ID: ", req.params.scheduleId);
   console.log("Body: ", req.body);
   const sessionUser = req.session.currentUser || req.user;
   let {
@@ -42,7 +42,7 @@ exports.createBooking = (req, res, next) => {
   } = req.body;
   Schedule.find({
       "timeBoxes._id": {
-        $eq: req.params.id,
+        $eq: req.params.scheduleId,
       },
     })
     .then(([{
@@ -50,19 +50,19 @@ exports.createBooking = (req, res, next) => {
     }]) => {
       //Filtrar el timebox seleccionado
       const [finalTimebox] = timeBoxes.filter(
-        (element) => element._id == req.params.id
+        (element) => element._id == req.params.scheduleId
       );
       const [{
         startTime
       }] = timeBoxes.filter(
-        (element) => element._id == req.params.id
+        (element) => element._id == req.params.scheduleId
       );
       const bookingRef = uniqueId();
       day = formattedDate(new Date(day));
       const remainingUpdate = finalTimebox.remaining - guests;
       Schedule.updateOne({
         property: propertyId,
-        "timeBoxes._id": req.params.id,
+        "timeBoxes._id": req.params.scheduleId,
       }, {
         $set: {
           "timeBoxes.$.remaining": remainingUpdate,
@@ -139,10 +139,7 @@ exports.myBookings = (req, res, next) => {
       })
       .then(user => {
         console.log("USER CON DEEP POPULATE: ", user);
-        res.render('owner/bookings', {
-          user,
-          title: 'Mis reservas | KOKOMO'
-        });
+        res.status(200).json(user);
       }).catch(error => next(error));
   }
   // BOOKINGS DEL CUSTOMER
@@ -155,22 +152,16 @@ exports.myBookings = (req, res, next) => {
         }
       })
       .then(user => {
-        res.render('customer/bookings', {
-          user,
-          title: 'Mis reservas | KOKOMO'
-        });
+        res.status(200).json(user);
       }).catch(error => next(error));
   }
 };
 //Detalles del booking
 exports.bookingDetails = (req, res) => {
-  Booking.findById(req.params.id)
+  Booking.findById(req.params.bookingId)
     .then((booking) => {
       console.log("BOOKING: ", booking);
-      res.render("customer/booking-details", {
-        booking: booking,
-        layout: "layout-nouser"
-      });
+      res.status(200).json(booking);
     })
     .catch((error) => {
       console.log("Error: ", error);
@@ -178,7 +169,7 @@ exports.bookingDetails = (req, res) => {
 };
 //Borrar una reserva
 exports.deleteBooking = (req, res) => {
-  const bookingId = req.params.id;
+  const bookingId = req.params.bookingId;
   const sessionUser = req.session.currentUser || req.user;
   Booking.findById(bookingId).then((booking) => {
     console.log("this is booking", booking);
@@ -205,7 +196,7 @@ exports.deleteBooking = (req, res) => {
   });
   Promise.all([p1, p2, p3])
     .then((resultados) => {
-      res.redirect("/my-bookings");
+      res.status(200).json(resultados);
     })
     .catch((error) => {
       console.log("Error: ", error);
