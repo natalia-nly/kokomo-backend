@@ -13,13 +13,11 @@ exports.allProperties = (req, res, next) => {
       .then((results) => {
         const favourites = results[0].favourites;
         const properties = results[1];
+        console.log("RESULTADO: ", results)
 
-        res.render("index", {
-          properties: properties,
-          title: "KOKOMO | ¡Haz tu reserva!",
-          user: sessionUser,
-          favourites: favourites,
-        });
+        let finalResult = [favourites, properties]
+
+        res.status(200).json(finalResult);
 
         return;
       })
@@ -30,11 +28,8 @@ exports.allProperties = (req, res, next) => {
     // si no hay usuario cargamos solamente los locales
     Property.find()
       .then((properties) => {
-        res.render("landing-page", {
-          properties: properties,
-          title: "KOKOMO | ¡Haz tu reserva!",
-          layout: "layout-nouser",
-        });
+        console.log("ENTRANDO DESDE SOLO PROPERTIES")
+        res.status(200).json(properties);
       })
       .catch((error) => {
         console.log("Error while getting the properties from the DB: ", error);

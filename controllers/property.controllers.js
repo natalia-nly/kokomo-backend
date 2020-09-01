@@ -347,9 +347,11 @@ exports.saveProperty = (req, res, next) => {
 //Añadir un favorito
 exports.loveProperty = (req, res, next) => {
     const sessionUser = req.session.currentUser || req.user;
+    console.log(req.params.propertyId)
     if (sessionUser) {
-        Property.findById(req.params.id)
+        Property.findById(req.params.propertyId)
             .then((resultado) => {
+                console.log(resultado)
                 return Customer.update({
                     _id: sessionUser._id,
                     favourites: {
@@ -365,7 +367,7 @@ exports.loveProperty = (req, res, next) => {
             })
             .then((customer) => {
                 console.log("Usuario actualizado", customer);
-                res.redirect("back");
+                res.status(200).json(customer);
             })
             .catch((error) => {
                 console.log("Error: ", error);

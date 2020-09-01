@@ -72,6 +72,7 @@ const booking = require('./routes/booking.routes');
 const property = require('./routes/property.routes');
 const profile = require('./routes/profile.routes');
 const search = require('./routes/search.routes');
+const index = require('./routes/index.routes');
 
 
 app.use('/api/auth', auth);
@@ -79,5 +80,6 @@ app.use('/api/booking', booking);
 app.use('/api/property', property);
 app.use('/api/profile', profile);
 app.use('/api/search', search);
+app.use('/api/', index);
 
 module.exports = app;
