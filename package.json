@@ -28,7 +28,9 @@
     "passport": "^0.4.1",
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
-    "serve-favicon": "^2.5.0"
+    "serve-favicon": "^2.5.0",
+    "unicode": "^12.1.0",
+    "unidecode": "^0.1.8"
   },
   "devDependencies": {
     "nodemon": "^1.12.1"
