@@ -147,8 +147,9 @@ exports.registerProperty = (req, res, next) => {
 //Ver detalle del local
 exports.viewProperty = (req, res, next) => {
     console.log('Hola')
-    console.log(req.params.propertyId)
+    console.log(req.params)
     const sessionUser = req.session.currentUser || req.user;
+    console.log(sessionUser)
     if (sessionUser) {
         const p1 = Customer.findById(sessionUser._id);
         const p2 = Property.findById(req.params.propertyId);
@@ -204,9 +205,10 @@ exports.viewProperty = (req, res, next) => {
                 console.log("Error: ", error);
             });
     } else {
-        Property.findById(req.params.id)
+        Property.findById(req.params.propertyId)
             .then((resultados) => {
                 const property = resultados;
+                console.log(resultados)
                 const openingDay = property.openingHours[0].openingDays.openingDay;
                 const closingDay = property.openingHours[0].openingDays.closingDay;
                 const formatOpening = dateFormat(openingDay, "dd/mm/yyyy");
