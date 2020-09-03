@@ -2,7 +2,7 @@ const Property = require("../models/property.model");
 const Schedule = require("../models/schedule.model");
 const Customer = require("../models/customer.model");
 const dateFormat = require("dateformat");
-
+const passport = require("passport");
 
 //Función creadora de Schedules para un local
 function createSchedule(property) {
@@ -10,50 +10,53 @@ function createSchedule(property) {
     const bookTime = property.bookingDuration;
     var scheduleObject = {
         property: property._id,
-        timeBoxes: [],
+        timeBoxes: []
     };
     let newSchedule;
     timeRanges.forEach((timeRange) => {
-        const openDays =
-            (timeRange.openingDays.closingDay.getTime() -
-                timeRange.openingDays.openingDay.getTime()) /
-            (1000 * 3600 * 24);
+        const openDays = (timeRange.openingDays.closingDay.getTime() - timeRange.openingDays.openingDay.getTime()) / (1000 * 3600 * 24);
         const weekDays = timeRange.weekDays;
         var currentDay = timeRange.openingDays.openingDay;
         for (let i = 0; i < openDays; i++) {
             if (weekDays.includes(currentDay.getDay())) {
-                timeRange.openingTimes.forEach((opening) => {
-                    var interval = bookTime / 60;
-                    let hours = opening.closingTime - opening.openingTime;
-                    let total = hours / interval;
-                    let t = opening.openingTime;
-                    let rest = 0;
-                    let startTime = t + rest;
-                    var timeBox = {
-                        day: currentDay,
-                        startTime: startTime,
-                        status: true,
-                        remaining: property.availablePlaces,
-                        total: property.availablePlaces,
-                    };
-                    for (let j = 0; j < total; j++) {
-                        t = t + bookTime / 100;
-                        if (t - Math.floor(t) >= 0.6) {
-                            let rest = t - Math.floor(t) - 0.6;
-                            t = Math.floor(t) + rest + 1;
-                        }
-                        timeBox = {
-                            day: new Date(currentDay),
-                            startTime: startTime.toFixed(2).replace(".", ":"),
+                timeRange
+                    .openingTimes
+                    .forEach((opening) => {
+                        var interval = bookTime / 60;
+                        let hours = opening.closingTime - opening.openingTime;
+                        let total = hours / interval;
+                        let t = opening.openingTime;
+                        let rest = 0;
+                        let startTime = t + rest;
+                        var timeBox = {
+                            day: currentDay,
+                            startTime: startTime,
                             status: true,
                             remaining: property.availablePlaces,
-                            total: property.availablePlaces,
+                            total: property.availablePlaces
                         };
-                        console.log("TimBox:" + timeBox);
-                        scheduleObject.timeBoxes.push(timeBox);
-                        startTime = t + rest;
-                    }
-                });
+                        for (let j = 0; j < total; j++) {
+                            t = t + bookTime / 100;
+                            if (t - Math.floor(t) >= 0.6) {
+                                let rest = t - Math.floor(t) - 0.6;
+                                t = Math.floor(t) + rest + 1;
+                            }
+                            timeBox = {
+                                day: new Date(currentDay),
+                                startTime: startTime
+                                    .toFixed(2)
+                                    .replace(".", ":"),
+                                status: true,
+                                remaining: property.availablePlaces,
+                                total: property.availablePlaces
+                            };
+                            console.log("TimBox:" + timeBox);
+                            scheduleObject
+                                .timeBoxes
+                                .push(timeBox);
+                            startTime = t + rest;
+                        }
+                    });
                 console.log(scheduleObject);
                 newSchedule = JSON.parse(JSON.stringify(scheduleObject));
 
@@ -106,55 +109,59 @@ exports.registerProperty = (req, res, next) => {
         location: {
             name: req.body.location.name,
             lat: req.body.location.lat,
-            long: req.body.location.long,
+            long: req.body.location.long
         },
-        openingHours: [{
-            openingDays: {
-                openingDay: req.body.openingHours[0].openingDays.openingDay,
-                closingDay: req.body.openingHours[0].openingDays.closingDay,
-            },
-            weekDays: workingDays,
-            openingTimes: [{
-                openingTime: req.body.openingHours[0].openingTimes[0].openingTime,
-                closingTime: req.body.openingHours[0].openingTimes[0].closingTime,
-            }, ],
-        }, ],
+        openingHours: [
+            {
+                openingDays: {
+                    openingDay: req.body.openingHours[0].openingDays.openingDay,
+                    closingDay: req.body.openingHours[0].openingDays.closingDay
+                },
+                weekDays: workingDays,
+                openingTimes: [
+                    {
+                        openingTime: req.body.openingHours[0].openingTimes[0].openingTime,
+                        closingTime: req.body.openingHours[0].openingTimes[0].closingTime
+                    }
+                ]
+            }
+        ],
         bookingDuration: req.body.bookingDuration,
-        availablePlaces: req.body.availablePlaces,
+        availablePlaces: req.body.availablePlaces
     };
     if (req.file) {
         dataProperty.mainImage = req.file.path;
     }
-    Property.create(dataProperty).then((property) => {
-        createSchedule(property);
-        Customer.findByIdAndUpdate(
-                sessionUser._id, {
-                    $push: {
-                        ownProperties: property._id,
-                    },
-                }, {
-                    new: true,
+    Property
+        .create(dataProperty)
+        .then((property) => {
+            createSchedule(property);
+            Customer.findByIdAndUpdate(sessionUser._id, {
+                $push: {
+                    ownProperties: property._id
                 }
-            )
-            .then((customer) => {
+            }, {new: true}).then((customer) => {
                 console.log(customer);
-            })
-            .catch((error) => {
+            }).catch((error) => {
                 console.log("Error: ", error);
             });
-        res.status(200).json(property)
-    });
+            res
+                .status(200)
+                .json(property)
+        });
 };
 //Ver detalle del local
 exports.viewProperty = (req, res, next) => {
-    console.log('Hola')
+    console.log('Hola', req.isAuthenticated())
     console.log(req.params)
+
     const sessionUser = req.session.currentUser || req.user;
     console.log(sessionUser)
     if (sessionUser) {
         const p1 = Customer.findById(sessionUser._id);
         const p2 = Property.findById(req.params.propertyId);
-        Promise.all([p1, p2])
+        Promise
+            .all([p1, p2])
             .then((resultados) => {
                 const favourites = resultados[0].favourites;
                 const property = resultados[1];
@@ -189,24 +196,22 @@ exports.viewProperty = (req, res, next) => {
                     }
                 });
                 console.log(property.openingHours[0].openingTimes[0]);
-                res.status(200).json(property);
-                // res.render("property/property-details", {
-                //     property: property,
-                //     title: `${property.name} | KOKOMO`,
-                //     user: resultados[0],
-                //     favourites: favourites,
-                //     openingDay: formatOpening,
-                //     closingDay: formatClosing,
-                //     weekDays: weekDaysFormat,
-                //     openingTime: property.openingHours[0].openingTimes[0].openingTime,
-                //     closingTime: property.openingHours[0].openingTimes[0].closingTime,
-                // });
+                res
+                    .status(200)
+                    .json(property);
+                // res.render("property/property-details", {     property: property,     title:
+                // `${property.name} | KOKOMO`,     user: resultados[0],     favourites:
+                // favourites,     openingDay: formatOpening,     closingDay: formatClosing,
+                // weekDays: weekDaysFormat,     openingTime:
+                // property.openingHours[0].openingTimes[0].openingTime,     closingTime:
+                // property.openingHours[0].openingTimes[0].closingTime, });
             })
             .catch((error) => {
                 console.log("Error: ", error);
             });
     } else {
-        Property.findById(req.params.propertyId)
+        Property
+            .findById(req.params.propertyId)
             .then((resultados) => {
                 const property = resultados;
                 console.log(resultados)
@@ -241,17 +246,15 @@ exports.viewProperty = (req, res, next) => {
                     }
                 });
                 console.log(property.openingHours[0].openingTimes[0]);
-                res.status(200).json(property);
-                // res.render("property/property-details", {
-                //     property: property,
-                //     title: `${property.name} | KOKOMO`,
-                //     openingDay: formatOpening,
-                //     closingDay: formatClosing,
-                //     weekDays: weekDaysFormat,
-                //     openingTime: property.openingHours[0].openingTimes[0].openingTime,
-                //     closingTime: property.openingHours[0].openingTimes[0].closingTime,
-                //     layout: 'layout-nouser'
-                // });
+                res
+                    .status(200)
+                    .json(property);
+                // res.render("property/property-details", {     property: property,     title:
+                // `${property.name} | KOKOMO`,     openingDay: formatOpening,     closingDay:
+                // formatClosing,     weekDays: weekDaysFormat,     openingTime:
+                // property.openingHours[0].openingTimes[0].openingTime,     closingTime:
+                // property.openingHours[0].openingTimes[0].closingTime,     layout:
+                // 'layout-nouser' });
             })
             .catch((error) => {
                 console.log("Error: ", error);
@@ -261,7 +264,8 @@ exports.viewProperty = (req, res, next) => {
 //Editar Local
 exports.editProperty = (req, res, next) => {
     const sessionUser = req.session.currentUser || req.user;
-    Property.findById(req.params.id)
+    Property
+        .findById(req.params.id)
         .then((resultado) => {
             console.log(resultado.openingHours[0]);
             res.render("property/edit-property", {
@@ -270,7 +274,7 @@ exports.editProperty = (req, res, next) => {
                 user: sessionUser,
                 weekDays: resultado.openingHours[0].weekDays,
                 openingTimes: resultado.openingHours[0].openingTimes[0],
-                openingDays: resultado.openingHours[0].openingDays,
+                openingDays: resultado.openingHours[0].openingDays
             });
         })
         .catch((error) => {
@@ -312,35 +316,38 @@ exports.saveProperty = (req, res, next) => {
         location: {
             name: req.body.ubication,
             lat: req.body.latitude,
-            long: req.body.longitude,
+            long: req.body.longitude
         },
-        openingHours: [{
-            openingDays: {
-                openingDay: req.body.opening,
-                closingDay: req.body.closing,
-            },
-            weekDays: workingDays,
-            openingTimes: [{
-                openingTime: req.body.openhour,
-                closingTime: req.body.closehour,
-            }, ],
-        }, ],
+        openingHours: [
+            {
+                openingDays: {
+                    openingDay: req.body.opening,
+                    closingDay: req.body.closing
+                },
+                weekDays: workingDays,
+                openingTimes: [
+                    {
+                        openingTime: req.body.openhour,
+                        closingTime: req.body.closehour
+                    }
+                ]
+            }
+        ],
         bookingDuration: req.body.duration,
-        availablePlaces: req.body.places,
+        availablePlaces: req.body.places
     };
     if (req.file) {
         dataProperty.mainImage = req.file.path;
     }
-    Property.findByIdAndUpdate(req.params.id, dataProperty, {
-            new: true,
-        })
+    Property
+        .findByIdAndUpdate(req.params.id, dataProperty, {new: true})
         .then((property) => {
             createSchedule(property);
             res.render("property/property-details", {
                 title: "Local creado | KOKOMO",
                 layout: "layout",
                 user: sessionUser,
-                property,
+                property
             });
         })
         .catch((error) => {
@@ -352,25 +359,26 @@ exports.loveProperty = (req, res, next) => {
     const sessionUser = req.session.currentUser || req.user;
     console.log(req.params.propertyId)
     if (sessionUser) {
-        Property.findById(req.params.propertyId)
+        Property
+            .findById(req.params.propertyId)
             .then((resultado) => {
                 console.log(resultado)
                 return Customer.update({
                     _id: sessionUser._id,
                     favourites: {
-                        $ne: resultado._id,
-                    },
+                        $ne: resultado._id
+                    }
                 }, {
                     $addToSet: {
-                        favourites: resultado._id,
-                    },
-                }, {
-                    new: true,
-                });
+                        favourites: resultado._id
+                    }
+                }, {new: true});
             })
             .then((customer) => {
                 console.log("Usuario actualizado", customer);
-                res.status(200).json(customer);
+                res
+                    .status(200)
+                    .json(customer);
             })
             .catch((error) => {
                 console.log("Error: ", error);
@@ -385,17 +393,13 @@ exports.addComment = (req, res) => {
     const sessionUser = req.session.currentUser || req.user;
     const newComment = {
         username: sessionUser.username,
-        comment: req.body.comment,
+        comment: req.body.comment
     };
-    Property.findByIdAndUpdate(
-        req.params.id, {
-            $push: {
-                comments: newComment,
-            },
-        }, {
-            new: true,
+    Property.findByIdAndUpdate(req.params.id, {
+        $push: {
+            comments: newComment
         }
-    ).then((propertyUpdated) => {
+    }, {new: true}).then((propertyUpdated) => {
         console.log(propertyUpdated);
         res.redirect(`/property/${propertyUpdated._id}`);
     });

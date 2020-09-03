@@ -13,11 +13,10 @@ const mongoose = require('mongoose');
 //middleware function para crear o recoger una sesión existente
 
 module.exports = app => {
-
     app.use(
         session({
             secret: process.env.SESS_SECRET,
-            resave: true,
+            resave: false,
             saveUninitialized: true,
             cookie: {
                 maxAge: 30600000

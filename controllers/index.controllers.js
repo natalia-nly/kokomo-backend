@@ -13,9 +13,10 @@ exports.allProperties = (req, res, next) => {
       .then((results) => {
         const favourites = results[0].favourites;
         const properties = results[1];
-        console.log("RESULTADO: ", results)
+        
 
-        let finalResult = [favourites, properties]
+        let finalResult = [properties, favourites]
+        console.log("RESULTADO: ", finalResult)
 
         res.status(200).json(finalResult);
 
@@ -29,7 +30,8 @@ exports.allProperties = (req, res, next) => {
     Property.find()
       .then((properties) => {
         console.log("ENTRANDO DESDE SOLO PROPERTIES")
-        res.status(200).json(properties);
+        let finalResult = [properties, []]
+        res.status(200).json(finalResult);
       })
       .catch((error) => {
         console.log("Error while getting the properties from the DB: ", error);

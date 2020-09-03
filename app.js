@@ -9,6 +9,8 @@ const mongoose     = require('mongoose');
 const logger       = require('morgan');
 const path         = require('path');
 const cors         = require('cors');
+const passport      = require('passport');
+
 
 
 
@@ -16,6 +18,7 @@ const app_name = require('./package.json').name;
 const debug = require('debug')(`${app_name}:${path.basename(__filename).split('.')[0]}`);
 
 // require database configuration
+require('./config/passport');
 require('./config/db.config');
 
 const app = express();
@@ -23,8 +26,7 @@ const app = express();
 //Session
 const createSession = require('./config/session.config');
 createSession(app);
-const passport      = require('passport');
-require('./config/passport');
+
 
 // USE passport.initialize() and passport.session() HERE:
 app.use(passport.initialize());
