@@ -101,6 +101,7 @@ exports.registerProperty = (req, res, next) => {
         name: req.body.name,
         description: req.body.description,
         categories: req.body.categories,
+        mainImage: req.body.mainImage,
         media: req.body.media,
         location: {
             name: req.body.location.name,
