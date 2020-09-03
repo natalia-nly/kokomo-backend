@@ -101,6 +101,7 @@ exports.registerProperty = (req, res, next) => {
         name: req.body.name,
         description: req.body.description,
         categories: req.body.categories,
+        mainImage: req.body.mainImage,
         media: req.body.media,
         location: {
             name: req.body.location.name,
@@ -204,7 +205,7 @@ exports.viewProperty = (req, res, next) => {
                 console.log("Error: ", error);
             });
     } else {
-        Property.findById(req.params.id)
+        Property.findById(req.params.propertyId)
             .then((resultados) => {
                 const property = resultados;
                 const openingDay = property.openingHours[0].openingDays.openingDay;
