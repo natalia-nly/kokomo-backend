@@ -12,12 +12,9 @@ function filterSchedules(day, guests, schedules) {
 
   return finalSchedules;
 }
-//Página de búsqueda
-exports.newSearch = (req, res, next) => {
-  res.render('search');
-};
 //Búsqueda de los locales/schedules disponibles
 exports.searchResults = (req, res, next) => {
+  console.log(req.body)
   Schedule.find({
       "timeBoxes.day": {
         $eq: req.body.bookingDate
@@ -38,9 +35,10 @@ exports.searchResults = (req, res, next) => {
         return obj;
       });
       console.log("FINAL RESULTS", finalResults);
-      res.render('search-result', {
-        schedule: finalResults
-      });
+      res
+      .status(200)
+      .json(finalResults)
+     
     })
     .catch((error) => {
       console.log("Error: ", error);

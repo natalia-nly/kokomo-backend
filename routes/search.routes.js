@@ -5,8 +5,7 @@ const axios = require('axios')
 const unidecode = require('unidecode')
 
 //Búsqueda de resultados
-router.get('/search', searchController.newSearch);
-router.post('/search', searchController.searchResults);
+router.post('/getAvailability', searchController.searchResults);
 //Consulta de disponibilidad en un Local
 router.post('/property/:propertyId', searchController.bookingDay);
 //Consulta de locales por Categoría
