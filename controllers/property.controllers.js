@@ -57,7 +57,6 @@ function createSchedule(property) {
                             startTime = t + rest;
                         }
                     });
-                console.log(scheduleObject);
                 newSchedule = JSON.parse(JSON.stringify(scheduleObject));
 
                 currentDay.setDate(currentDay.getDate() + 1);
@@ -99,6 +98,7 @@ exports.registerProperty = (req, res, next) => {
         workingDays.push(0);
     }
     const sessionUser = req.session.currentUser || req.user;
+    console.log(sessionUser,'SessionUser')
     const dataProperty = {
         owner: sessionUser,
         name: req.body.name,
@@ -132,10 +132,12 @@ exports.registerProperty = (req, res, next) => {
     if (req.file) {
         dataProperty.mainImage = req.file.path;
     }
+  
     Property
         .create(dataProperty)
         .then((property) => {
             createSchedule(property);
+            console.log(sessionUser,'SessionUser')
             Customer.findByIdAndUpdate(sessionUser._id, {
                 $push: {
                     ownProperties: property._id
