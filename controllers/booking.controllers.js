@@ -37,7 +37,6 @@ exports.createBooking = (req, res, next) => {
   const sessionUser = req.session.currentUser || req.user;
   let {
     day,
-    propertyId,
     guests
   } = req.body;
   Schedule.find({
@@ -45,21 +44,21 @@ exports.createBooking = (req, res, next) => {
         $eq: req.params.scheduleId,
       },
     })
-    .then(([{
-      timeBoxes
-    }]) => {
+    .then(([schedule]) => {
+      console.log('schedule:',schedule)
       //Filtrar el timebox seleccionado
-      const [finalTimebox] = timeBoxes.filter(
+      const [finalTimebox] = schedule.timeBoxes.filter(
         (element) => element._id == req.params.scheduleId
       );
       const [{
         startTime
-      }] = timeBoxes.filter(
+      }] = schedule.timeBoxes.filter(
         (element) => element._id == req.params.scheduleId
       );
       const bookingRef = uniqueId();
       day = formattedDate(new Date(day));
       const remainingUpdate = finalTimebox.remaining - guests;
+      let propertyId = schedule.property
       Schedule.updateOne({
         property: propertyId,
         "timeBoxes._id": req.params.scheduleId,
