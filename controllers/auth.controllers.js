@@ -158,6 +158,7 @@ exports.logout = (req, res) => {
 exports.loggedIn = (req, res) => {
   // req.isAuthenticated() is defined by passport
   if (req.isAuthenticated()) {
+    console.log('result isAuthenticated',req)
     res.status(200).json(req.user);
     return;
   }
