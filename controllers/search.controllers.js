@@ -82,11 +82,10 @@ exports.viewCategory = (req, res) => {
         categories: req.params.name
       })
       .then((properties) => {
-        res.render("property/category", {
-          category: req.params.name,
-          user: sessionUser,
-          properties: properties
-        });
+        const allProperties = properties
+        const favourites = sessionUser.favourites
+        const finalResult = [allProperties, favourites]
+        res.status(200).json(finalResult)
       })
       .catch((error) => {
         console.log("Error: ", error);
@@ -96,12 +95,9 @@ exports.viewCategory = (req, res) => {
         categories: req.params.name
       })
       .then((properties) => {
-        res.render("property/category", {
-          category: req.params.name,
-          user: sessionUser,
-          properties: properties,
-          layout: 'layout-nouser'
-        });
+        const allProperties = properties
+        const finalResult = [allProperties]
+        res.status(200).json(finalResult)
       })
       .catch((error) => {
         console.log("Error: ", error);

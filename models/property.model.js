@@ -6,7 +6,8 @@ const propertySchema = new Schema({
     description: String,
     categories: {
         type: [String],
-        enum: ["Chillout", "Surfer", "Restaurante", "Discoteca", "Bar"]
+        enum: ["Chillout", "Surfer", "Restaurante", "Discoteca", "Bar"],
+        default: "Sin categoría"
     },
     mainImage: String,
     media: [String],
