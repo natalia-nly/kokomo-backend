@@ -10,11 +10,10 @@ cloudinary.config({
 
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
-  params: {
-    folder: 'test-folder', // la carpeta en cloudinary
-    format: async (req, file) => 'png',
-     // para mantener el nombre original:
-    public_id: (req, file) => file.originalname
+  folder: 'kokomo-react',
+  allowedFormats: ['jpg', 'png'],
+  filename: function (req, res, cb) {
+    cb(null, res.originalname); // The file on cloudinary would have the same name as the original file name
   }
 });
 
