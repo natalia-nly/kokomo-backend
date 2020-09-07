@@ -46,7 +46,8 @@ exports.searchResults = (req, res, next) => {
 };
 //Búsqueda de disponibilidad en un local
 exports.bookingDay = (req, res, next) => {
-  const propertyId = req.params.id;
+  const propertyId = req.params.propertyId;
+  console.log('propertyId', propertyId)
   let bookingDate = req.body.bookingDate;
   //let newDate = new Date(bookingDate);
   let newGuests = req.body.numberGuests;
@@ -65,15 +66,9 @@ exports.bookingDay = (req, res, next) => {
       const schedules = resultados[1];
       const allSchedules = schedules[0].timeBoxes;
       const finalSchedules = filterSchedules(bookingDate, newGuests, allSchedules);
-      res.render("property/booking-options", {
-        property: theProperty,
-        schedule: finalSchedules,
-        newDate: bookingDate,
-        newGuests: newGuests,
-        guests: newGuests,
-        user: sessionUser,
-        title: `${theProperty.name} | KOKOMO`,
-      });
+      res
+      .status(200)
+      .json(finalSchedules)
     })
     .catch((error) => {
       console.log("Error: ", error);
