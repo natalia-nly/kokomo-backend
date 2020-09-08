@@ -34,7 +34,10 @@ const propertySchema = new Schema({
         day: Date,
         comment: String
     }],
-    rating: Number,
+    rating: {
+        counter: Number,
+        rating: Number
+    },
     bookings: [{type: Schema.Types.ObjectId, ref: "Booking"}]
 }, {
     timestamps: {
