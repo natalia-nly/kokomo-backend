@@ -4,7 +4,7 @@ const propertyController = require('../controllers/property.controllers');
 const uploadCloud = require('../config/cloudinary.js');
 
 //Creación de un local
-router.post('/create-property', uploadCloud.single('mainImage'), propertyController.registerProperty);
+router.post('/create-property', propertyController.registerProperty);
 //Ver detalles de un local
 router.get('/:propertyId', propertyController.viewProperty);
 //Edición de un local

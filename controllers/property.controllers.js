@@ -74,65 +74,68 @@ function createSchedule(property) {
 }
 //POST Creación del local
 exports.registerProperty = (req, res, next) => {
-    console.log(req.body);
+    console.log('this is req', req)
+    console.log('this is the property body', req.body);
+    const data = req.body.body
     const workingDays = [];
-    if (req.body.openingHours[0].weekDays.includes(1)) {
+    if (data.openingHours[0].weekDays.includes(1)) {
         workingDays.push(1);
     }
-    if (req.body.openingHours[0].weekDays.includes(2)) {
+    if (data.openingHours[0].weekDays.includes(2)) {
         workingDays.push(2);
     }
-    if (req.body.openingHours[0].weekDays.includes(3)) {
+    if (data.openingHours[0].weekDays.includes(3)) {
         workingDays.push(3);
     }
-    if (req.body.openingHours[0].weekDays.includes(4)) {
+    if (data.openingHours[0].weekDays.includes(4)) {
         workingDays.push(4);
     }
-    if (req.body.openingHours[0].weekDays.includes(5)) {
+    if (data.openingHours[0].weekDays.includes(5)) {
         workingDays.push(5);
     }
-    if (req.body.openingHours[0].weekDays.includes(6)) {
+    if (data.openingHours[0].weekDays.includes(6)) {
         workingDays.push(0);
     }
-    if (req.body.openingHours[0].weekDays.includes(0)) {
+    if (data.openingHours[0].weekDays.includes(0)) {
         workingDays.push(0);
     }
     const sessionUser = req.session.currentUser || req.user;
     console.log(sessionUser,'SessionUser')
     const dataProperty = {
         owner: sessionUser,
-        name: req.body.name,
-        description: req.body.description,
-        categories: req.body.categories,
-        mainImage: req.body.mainImage,
-        media: req.body.media,
+        name: data.name,
+        description: data.description,
+        categories: data.categories,
+        mainImage: data.mainImage,
+        media: data.media,
         location: {
-            name: req.body.location.name,
-            lat: req.body.location.lat,
-            long: req.body.location.long
+            name: data.location.name,
+            lat: data.location.lat,
+            long: data.location.long
         },
         openingHours: [
             {
                 openingDays: {
-                    openingDay: req.body.openingHours[0].openingDays.openingDay,
-                    closingDay: req.body.openingHours[0].openingDays.closingDay
+                    openingDay: data.openingHours[0].openingDays.openingDay,
+                    closingDay: data.openingHours[0].openingDays.closingDay
                 },
                 weekDays: workingDays,
                 openingTimes: [
                     {
-                        openingTime: req.body.openingHours[0].openingTimes[0].openingTime,
-                        closingTime: req.body.openingHours[0].openingTimes[0].closingTime
+                        openingTime: data.openingHours[0].openingTimes[0].openingTime,
+                        closingTime: data.openingHours[0].openingTimes[0].closingTime
                     }
                 ]
             }
         ],
-        bookingDuration: req.body.bookingDuration,
-        availablePlaces: req.body.availablePlaces
+        bookingDuration: data.bookingDuration,
+        availablePlaces: data.availablePlaces
     };
+    console.log(data.mainImage)
     if (req.file) {
-        dataProperty.mainImage = req.file.path;
+        dataProperty.mainImage = data.mainImage;
     }
-  
+    console.log('datapropety', dataProperty)
     Property
         .create(dataProperty)
         .then((property) => {
