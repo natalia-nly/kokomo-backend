@@ -359,7 +359,7 @@ exports.saveProperty = (req, res, next) => {
 //Añadir un favorito
 exports.loveProperty = (req, res, next) => {
     const sessionUser = req.session.currentUser || req.user;
-    console.log(req.params.propertyId)
+    console.log("ID DE LA PROPERTY: ", req.params.propertyId)
     if (sessionUser) {
         Property
             .findById(req.params.propertyId)
@@ -368,25 +368,24 @@ exports.loveProperty = (req, res, next) => {
                 return Customer.update({
                     _id: sessionUser._id,
                     favourites: {
-                        $ne: resultado._id
+                        $ne: resultado
                     }
                 }, {
                     $addToSet: {
-                        favourites: resultado._id
+                        favourites: resultado
                     }
                 }, {new: true});
             })
             .then((customer) => {
                 console.log("Usuario actualizado", customer);
+                const favourites = customer
                 res
                     .status(200)
-                    .json(customer);
+                    .json(favourites);
             })
             .catch((error) => {
                 console.log("Error: ", error);
             });
-    } else {
-        res.redirect(`/property/${req.params.id}`);
     }
 
 };
@@ -403,6 +402,6 @@ exports.addComment = (req, res) => {
         }
     }, {new: true}).then((propertyUpdated) => {
         console.log(propertyUpdated);
-        res.redirect(`/property/${propertyUpdated._id}`);
+        res.status(200).json(propertyUpdated);
     });
 };
