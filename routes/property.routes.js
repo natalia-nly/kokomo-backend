@@ -27,4 +27,5 @@ router.post('/upload', uploadCloud.single("mainImage"), (req, res, next) => {
     }
 })
 
+
 module.exports = router;

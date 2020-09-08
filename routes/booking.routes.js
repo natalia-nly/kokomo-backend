@@ -6,6 +6,8 @@ const bookingController = require('../controllers/booking.controllers');
 router.post('/create-booking/:scheduleId', bookingController.createBooking);
 //Ver bookings
 router.get("/my-bookings", bookingController.myBookings);
+//Ver bookings en Properties
+router.get("/my-properties-bookings", bookingController.myPropertiesBookings);
 //Detalles del Booking
 router.get('/details/:bookingId', bookingController.bookingDetails);
 //Borrar bookings

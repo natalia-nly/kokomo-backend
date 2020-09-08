@@ -120,6 +120,22 @@ exports.createBooking = (req, res, next) => {
 //Ver Bookings - listado
 exports.myBookings = (req, res, next) => {
   const sessionUser = req.session.currentUser || req.user;
+
+    Customer.findById(sessionUser._id)
+      .populate({
+        path: 'bookings',
+        populate: {
+          path: 'property'
+        }
+      })
+      .then(user => {
+        res.status(200).json(user);
+      }).catch(error => next(error));
+  
+};
+
+exports.myPropertiesBookings = (req, res, next) => {
+  const sessionUser = req.session.currentUser || req.user;
   // BOOKINGS DEL OWNER
   if (sessionUser.owner) {
     Customer.findById(sessionUser._id).populate({
@@ -141,20 +157,8 @@ exports.myBookings = (req, res, next) => {
         res.status(200).json(user);
       }).catch(error => next(error));
   }
-  // BOOKINGS DEL CUSTOMER
-  else {
-    Customer.findById(sessionUser._id)
-      .populate({
-        path: 'bookings',
-        populate: {
-          path: 'property'
-        }
-      })
-      .then(user => {
-        res.status(200).json(user);
-      }).catch(error => next(error));
-  }
 };
+
 //Detalles del booking
 exports.bookingDetails = (req, res) => {
   Booking.findById(req.params.bookingId)

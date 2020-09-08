@@ -408,3 +408,4 @@ exports.addComment = (req, res) => {
         res.status(200).json(propertyUpdated);
     });
 };
+
