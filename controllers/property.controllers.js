@@ -399,7 +399,7 @@ exports.addComment = (req, res) => {
         username: sessionUser.username,
         comment: req.body.comment
     };
-    Property.findByIdAndUpdate(req.params.id, {
+    Property.findByIdAndUpdate(req.params.propertyId, {
         $push: {
             comments: newComment
         }
