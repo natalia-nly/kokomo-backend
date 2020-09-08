@@ -8,27 +8,37 @@ const hbs          = require('hbs');
 const mongoose     = require('mongoose');
 const logger       = require('morgan');
 const path         = require('path');
+const cors         = require('cors');
+const passport      = require('passport');
 
 
-mongoose
-  .connect(process.env.MONGODB_URI, {useNewUrlParser: true})
-  .then(x => {
-    console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`)
-  })
-  .catch(err => {
-    console.error('Error connecting to mongo', err)
-  });
+
 
 const app_name = require('./package.json').name;
 const debug = require('debug')(`${app_name}:${path.basename(__filename).split('.')[0]}`);
 
+// require database configuration
+require('./config/passport');
+require('./config/db.config');
+
 const app = express();
+
+//Session
+const createSession = require('./config/session.config');
+createSession(app);
+
+
+// USE passport.initialize() and passport.session() HERE:
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Middleware Setup
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+
 
 // Express View engine setup
 
@@ -49,10 +59,29 @@ app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
 // default value for title local
 app.locals.title = 'Kokomo';
 
+// Enable CORS
+app.use(
+  cors({
+    credentials: true,
+    origin: ['http://localhost:3001', 'http://localhost:3000'],
+  })
+);
 
 
-const index = require('./routes/index');
-app.use('/', index);
+//ROUTES
+const auth = require('./routes/auth.routes');
+const booking = require('./routes/booking.routes');
+const property = require('./routes/property.routes');
+const profile = require('./routes/profile.routes');
+const search = require('./routes/search.routes');
+const index = require('./routes/index.routes');
 
+
+app.use('/api/auth', auth);
+app.use('/api/booking', booking);
+app.use('/api/property', property);
+app.use('/api/profile', profile);
+app.use('/api/search', search);
+app.use('/api/', index);
 
 module.exports = app;
