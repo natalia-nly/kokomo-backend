@@ -31,11 +31,11 @@ const propertySchema = new Schema({
     availablePlaces: Number,
     comments: [{
         username: String,
-        day: Date,
+        avatar: String,
         comment: String
     }],
     rating: {
-        counter: Number,
+        counter: [Number],
         rating: Number
     },
     bookings: [{type: Schema.Types.ObjectId, ref: "Booking"}]

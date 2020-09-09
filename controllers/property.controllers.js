@@ -397,7 +397,8 @@ exports.addComment = (req, res) => {
     const sessionUser = req.session.currentUser || req.user;
     const newComment = {
         username: sessionUser.username,
-        comment: req.body.comment
+        comment: req.body.comment,
+        avatar: req.body.avatar
     };
     Property.findByIdAndUpdate(req.params.propertyId, {
         $push: {
