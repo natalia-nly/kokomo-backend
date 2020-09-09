@@ -402,7 +402,8 @@ exports.addComment = (req, res) => {
     };
     Property.findByIdAndUpdate(req.params.propertyId, {
         $push: {
-            comments: newComment
+            comments: newComment,
+            "rating.counter": req.body.rating
         }
     }, {new: true}).then((propertyUpdated) => {
         console.log(propertyUpdated);
