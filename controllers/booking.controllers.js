@@ -143,14 +143,10 @@ exports.myPropertiesBookings = (req, res, next) => {
         populate: {
           path: 'bookings',
           populate: {
-            path: 'customer'
+            path: 'customer',
+            select: ['username','email','telNumber']
           }
         } 
-      }).populate({
-        path: 'bookings',
-        populate: {
-          path: 'property'
-        }
       })
       .then(user => {
         console.log("USER CON DEEP POPULATE: ", user);
