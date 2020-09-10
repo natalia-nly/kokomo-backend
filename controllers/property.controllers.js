@@ -338,6 +338,10 @@ exports.saveProperty = (req, res, next) => {
                 ]
             }
         ],
+        rating:{
+            counter:[0],
+            rating: 0
+        },
         bookingDuration: req.body.duration,
         availablePlaces: req.body.places
     };
