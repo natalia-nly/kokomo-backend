@@ -266,99 +266,39 @@ exports.viewProperty = (req, res, next) => {
             });
     }
 };
-//Editar Local
-exports.editProperty = (req, res, next) => {
-    const sessionUser = req.session.currentUser || req.user;
-    Property
-        .findById(req.params.id)
-        .then((resultado) => {
-            console.log(resultado.openingHours[0]);
-            res.render("property/edit-property", {
-                property: resultado,
-                title: `Editar ${resultado.name} | KOKOMO`,
-                user: sessionUser,
-                weekDays: resultado.openingHours[0].weekDays,
-                openingTimes: resultado.openingHours[0].openingTimes[0],
-                openingDays: resultado.openingHours[0].openingDays
-            });
-        })
-        .catch((error) => {
-            console.log("Error: ", error);
-        });
-};
+
 //Guardar cambios del local
 exports.saveProperty = (req, res, next) => {
     console.log(req.body);
-    const workingDays = [];
-    if (req.body.monday) {
-        workingDays.push(req.body.monday);
-    }
-    if (req.body.tuesday) {
-        workingDays.push(req.body.tuesday);
-    }
-    if (req.body.wednesday) {
-        workingDays.push(req.body.wednesday);
-    }
-    if (req.body.thursday) {
-        workingDays.push(req.body.thursday);
-    }
-    if (req.body.friday) {
-        workingDays.push(req.body.friday);
-    }
-    if (req.body.satuday) {
-        workingDays.push(req.body.saturday);
-    }
-    if (req.body.sunday) {
-        workingDays.push(req.body.sunday);
-    }
+
     const sessionUser = req.session.currentUser || req.user;
     const dataProperty = {
+        _id: req.body._id,
         owner: sessionUser,
         name: req.body.name,
         description: req.body.description,
-        categories: [req.body.categories],
-        media: [req.body.media],
+        mainImage: req.body.mainImage,
+        categories: req.body.categories,
         location: {
-            name: req.body.ubication,
-            lat: req.body.latitude,
-            long: req.body.longitude
+            name: req.body.location.name,
+            lat: req.body.location.lat,
+            long: req.body.location.long
         },
-        openingHours: [
-            {
-                openingDays: {
-                    openingDay: req.body.opening,
-                    closingDay: req.body.closing
-                },
-                weekDays: workingDays,
-                openingTimes: [
-                    {
-                        openingTime: req.body.openhour,
-                        closingTime: req.body.closehour
-                    }
-                ]
-            }
-        ],
         bookingDuration: req.body.duration,
         availablePlaces: req.body.places
     };
-    if (req.file) {
-        dataProperty.mainImage = req.file.path;
-    }
+
     Property
-        .findByIdAndUpdate(req.params.id, dataProperty, {new: true})
+        .findByIdAndUpdate(req.body._id, dataProperty, {new: true})
         .then((property) => {
-            createSchedule(property);
-            res.render("property/property-details", {
-                title: "Local creado | KOKOMO",
-                layout: "layout",
-                user: sessionUser,
-                property
-            });
+            console.log("PROPERTY ACTUALIZADA: ", property)
+            res.status(200).json(property)
         })
         .catch((error) => {
             console.log("Error: ", error);
         });
 };
+
 //Añadir un favorito
 exports.loveProperty = (req, res, next) => {
     const sessionUser = req.session.currentUser || req.user;
@@ -411,3 +351,16 @@ exports.addComment = (req, res) => {
     });
 };
 
+//Guardar cambios del local
+exports.deleteProperty = (req, res, next) => {
+
+    Property
+        .findByIdAndDelete(req.params.propertyId)
+        .then((property) => {
+            console.log("PROPERTY ELIMINADA: ", property)
+            res.status(200)
+        })
+        .catch((error) => {
+            console.log("Error: ", error);
+        });
+};
