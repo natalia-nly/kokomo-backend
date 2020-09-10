@@ -119,8 +119,8 @@ exports.createBooking = (req, res, next) => {
 };
 //Ver Bookings - listado
 exports.myBookings = (req, res, next) => {
-  const sessionUser = req.session.currentUser || req.user;
-
+  const sessionUser = req.user;
+console.log(sessionUser)
     Customer.findById(sessionUser._id)
       .populate({
         path: 'bookings',
@@ -135,7 +135,7 @@ exports.myBookings = (req, res, next) => {
 };
 
 exports.myPropertiesBookings = (req, res, next) => {
-  const sessionUser = req.session.currentUser || req.user;
+  const sessionUser =  req.user;
   // BOOKINGS DEL OWNER
   if (sessionUser.owner) {
     Customer.findById(sessionUser._id).populate({
@@ -143,14 +143,10 @@ exports.myPropertiesBookings = (req, res, next) => {
         populate: {
           path: 'bookings',
           populate: {
-            path: 'customer'
+            path: 'customer',
+            select: ['username','email','telNumber']
           }
         } 
-      }).populate({
-        path: 'bookings',
-        populate: {
-          path: 'property'
-        }
       })
       .then(user => {
         console.log("USER CON DEEP POPULATE: ", user);
