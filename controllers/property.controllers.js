@@ -353,14 +353,23 @@ exports.addComment = (req, res) => {
 
 //Guardar cambios del local
 exports.deleteProperty = (req, res, next) => {
+    const sessionUser = req.user;
+    const propertyId=req.params.propertyId
+    const p1 = Schedule.findOneAndDelete({property:propertyId})
+    const p2 = Customer.findByIdAndUpdate({
+        _id: sessionUser._id,
+      }, {
+        $pull: {
+         ownProperties: propertyId,
+        },
+      });
+      const p3 = Property.findByIdAndDelete(propertyId);
+      Promise.all([p1, p2, p3])
+      .then((resultados) => {
+        res.status(200).json(resultados);
+      })
+      .catch((error) => {
+        console.log("Error: ", error);
+      });
 
-    Property
-        .findByIdAndDelete(req.params.propertyId)
-        .then((property) => {
-            console.log("PROPERTY ELIMINADA: ", property)
-            res.status(200)
-        })
-        .catch((error) => {
-            console.log("Error: ", error);
-        });
-};
+    };
