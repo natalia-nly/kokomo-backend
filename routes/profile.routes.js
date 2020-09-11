@@ -16,5 +16,7 @@ router.post("/profile/add-owner", profileController.profileOwnerAdd);
 router.get("/my-favourites", profileController.myFavourites);
 //Borrar cuenta
 router.get("/profile/delete", profileController.deleteAccount);
+//Mandar mensaje
+router.post("/send-message/:clientId", profileController.sendMessage);
 
 module.exports = router;

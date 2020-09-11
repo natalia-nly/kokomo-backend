@@ -54,6 +54,16 @@ const customerSchema = new Schema({
       type: Schema.Types.ObjectId,
       ref: "Property"
     }],
+    messages: [{
+      fromUser: String,
+      refUser: [{
+        type: Schema.Types.ObjectId,
+        ref: "Customer"
+      }],
+      avatar: String,
+      topic: String,
+      message: String
+  }],
   },
 
   {
