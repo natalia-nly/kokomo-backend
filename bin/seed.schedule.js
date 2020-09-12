@@ -13,7 +13,7 @@ function createSchedule(property) {
 
     const timeRanges = property.opningHours;
     const bookTime = property.bookingDuration;
-    var scheduleObject = {
+    let scheduleObject = {
         property: property._id,
         time_boxes: []
     };
@@ -21,12 +21,12 @@ function createSchedule(property) {
     timeRanges.forEach(timeRange => {
         const openDays = (timeRange. openingDays.closingDay.getTime() - timeRange.openingDays.openingDay.getTime()) / (1000 * 3600 * 24);
         const weekDays = timeRange.weekDays;
-        var currentDay = timeRange.openingDays.openingDay;
+        let currentDay = timeRange.openingDays.openingDay;
     
         for (let i = 0; i < openDays; i++) {
             if (weekDays.includes(currentDay.getDay())) {
                 timeRange.opening_times.forEach(opening => {
-                    var interval = bookTime / 60;
+                    let interval = bookTime / 60;
                     let hours = opening.closingTime - opening.openingTime;
                     let total = hours / interval;
                     let t = opening.openingTime;

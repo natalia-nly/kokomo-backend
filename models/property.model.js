@@ -31,10 +31,13 @@ const propertySchema = new Schema({
     availablePlaces: Number,
     comments: [{
         username: String,
-        day: Date,
+        avatar: String,
         comment: String
     }],
-    rating: Number,
+    rating: {
+        counter: [Number],
+        rating: Number
+    },
     bookings: [{type: Schema.Types.ObjectId, ref: "Booking"}]
 }, {
     timestamps: {

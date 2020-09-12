@@ -127,3 +127,25 @@ exports.deleteAccount = (req, res, next) => {
         res.redirect('/');
       }).catch(error => next(error));
   };
+
+  //Enviar mensaje
+exports.sendMessage = (req, res) => {
+    const sessionUser = req.user;
+    const newMessage = {
+        fromUser: sessionUser.username,
+        refUser: sessionUser._id,
+        avatar: req.body.avatar,
+        topic: req.body.topic,
+        message: req.body.message,
+    };
+    console.log(newMessage)
+    console.log(req.params)
+    Customer.findByIdAndUpdate(req.params.clientId, {
+        $push: {
+            messages: newMessage
+        }
+    }, {new: true}).then((customerUpdated) => {
+        console.log(customerUpdated);
+        res.status(200).json(customerUpdated);
+    });
+};

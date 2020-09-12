@@ -7,10 +7,10 @@ const Customer = require("../models/customer.model");
 function uniqueId(stringLength, possible) {
   stringLength = 5;
   possible = "ABCDEFGHJKMNPQRSTUXY12345";
-  var text = "";
+  let text = "";
 
-  for (var i = 0; i < stringLength; i++) {
-    var character = getCharacter(possible);
+  for (let i = 0; i < stringLength; i++) {
+    let character = getCharacter(possible);
     while (text.length > 0 && character === text.substr(-1)) {
       character = getCharacter(possible);
     }
@@ -119,8 +119,8 @@ exports.createBooking = (req, res, next) => {
 };
 //Ver Bookings - listado
 exports.myBookings = (req, res, next) => {
-  const sessionUser = req.session.currentUser || req.user;
-
+  const sessionUser = req.user;
+console.log(sessionUser)
     Customer.findById(sessionUser._id)
       .populate({
         path: 'bookings',
@@ -135,7 +135,7 @@ exports.myBookings = (req, res, next) => {
 };
 
 exports.myPropertiesBookings = (req, res, next) => {
-  const sessionUser = req.session.currentUser || req.user;
+  const sessionUser =  req.user;
   // BOOKINGS DEL OWNER
   if (sessionUser.owner) {
     Customer.findById(sessionUser._id).populate({
@@ -143,14 +143,10 @@ exports.myPropertiesBookings = (req, res, next) => {
         populate: {
           path: 'bookings',
           populate: {
-            path: 'customer'
+            path: 'customer',
+            select: ['username','email','telNumber']
           }
         } 
-      }).populate({
-        path: 'bookings',
-        populate: {
-          path: 'property'
-        }
       })
       .then(user => {
         console.log("USER CON DEEP POPULATE: ", user);
@@ -162,6 +158,9 @@ exports.myPropertiesBookings = (req, res, next) => {
 //Detalles del booking
 exports.bookingDetails = (req, res) => {
   Booking.findById(req.params.bookingId)
+  .populate({
+    path: 'customer',
+  })
     .then((booking) => {
       console.log("BOOKING: ", booking);
       res.status(200).json(booking);
