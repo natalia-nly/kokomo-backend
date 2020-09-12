@@ -351,7 +351,7 @@ exports.addComment = (req, res) => {
     });
 };
 
-//Guardar cambios del local
+//Borrar local
 exports.deleteProperty = (req, res, next) => {
     const sessionUser = req.user;
     const propertyId=req.params.propertyId

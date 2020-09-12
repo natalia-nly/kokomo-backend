@@ -9,7 +9,7 @@ router.post('/create-property', propertyController.registerProperty);
 router.get('/:propertyId', propertyController.viewProperty);
 //Edición de un local
 router.post('/edit/:propertyId', uploadCloud.single('main'), propertyController.saveProperty);
-//Edición de un local
+//Borrar un local
 router.get('/delete/:propertyId', propertyController.deleteProperty);
 //Añadir a favoritos un local
 router.get('/love/:propertyId', propertyController.loveProperty);
