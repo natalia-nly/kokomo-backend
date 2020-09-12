@@ -158,6 +158,9 @@ exports.myPropertiesBookings = (req, res, next) => {
 //Detalles del booking
 exports.bookingDetails = (req, res) => {
   Booking.findById(req.params.bookingId)
+  .populate({
+    path: 'customer',
+  })
     .then((booking) => {
       console.log("BOOKING: ", booking);
       res.status(200).json(booking);
