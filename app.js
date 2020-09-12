@@ -63,7 +63,7 @@ app.locals.title = 'Kokomo';
 app.use(
   cors({
     credentials: true,
-    origin: ['http://localhost:3001', 'http://localhost:3000'],
+    origin: ['http://localhost:3001', 'http://localhost:3000', 'http://kokomo-react.herokuapp.com'],
   })
 );
 

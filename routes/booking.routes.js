@@ -10,7 +10,8 @@ router.get("/my-bookings", bookingController.myBookings);
 router.get("/my-properties-bookings", bookingController.myPropertiesBookings);
 //Detalles del Booking
 router.get('/details/:bookingId', bookingController.bookingDetails);
-//Borrar bookings
+//Borrar booking
+//
 router.post('/delete/:bookingId', bookingController.deleteBooking);
 
 module.exports = router;
