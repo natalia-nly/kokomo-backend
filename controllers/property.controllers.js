@@ -8,7 +8,7 @@ const passport = require("passport");
 function createSchedule(property) {
     const timeRanges = property.openingHours;
     const bookTime = property.bookingDuration;
-    var scheduleObject = {
+    let scheduleObject = {
         property: property._id,
         timeBoxes: []
     };
@@ -16,19 +16,19 @@ function createSchedule(property) {
     timeRanges.forEach((timeRange) => {
         const openDays = (timeRange.openingDays.closingDay.getTime() - timeRange.openingDays.openingDay.getTime()) / (1000 * 3600 * 24);
         const weekDays = timeRange.weekDays;
-        var currentDay = timeRange.openingDays.openingDay;
+        let currentDay = timeRange.openingDays.openingDay;
         for (let i = 0; i < openDays; i++) {
             if (weekDays.includes(currentDay.getDay())) {
                 timeRange
                     .openingTimes
                     .forEach((opening) => {
-                        var interval = bookTime / 60;
+                        let interval = bookTime / 60;
                         let hours = opening.closingTime - opening.openingTime;
                         let total = hours / interval;
                         let t = opening.openingTime;
                         let rest = 0;
                         let startTime = t + rest;
-                        var timeBox = {
+                        let timeBox = {
                             day: currentDay,
                             startTime: startTime,
                             status: true,

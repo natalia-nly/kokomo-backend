@@ -7,10 +7,10 @@ const Customer = require("../models/customer.model");
 function uniqueId(stringLength, possible) {
   stringLength = 5;
   possible = "ABCDEFGHJKMNPQRSTUXY12345";
-  var text = "";
+  let text = "";
 
-  for (var i = 0; i < stringLength; i++) {
-    var character = getCharacter(possible);
+  for (let i = 0; i < stringLength; i++) {
+    let character = getCharacter(possible);
     while (text.length > 0 && character === text.substr(-1)) {
       character = getCharacter(possible);
     }

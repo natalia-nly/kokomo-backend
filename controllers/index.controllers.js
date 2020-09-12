@@ -46,7 +46,7 @@ exports.allProperties = (req, res, next) => {
       const getBookings = async () => {
         return Promise.all(
           resultado.bookings.map(async (booking) => {
-            var item = await Booking.findById(booking.bookingId);
+            let item = await Booking.findById(booking.bookingId);
             return item;
           })
         );
