@@ -7,7 +7,7 @@ const unidecode = require('unidecode')
 //Búsqueda de resultados
 router.post('/getAvailability', searchController.searchResults);
 //Consulta de disponibilidad en un Local
-router.post('/property/:propertyId', searchController.bookingDay);
+router.post('/getAvailability/:propertyId', searchController.bookingDay);
 //Consulta de locales por Categoría
 router.get('/category/:name', searchController.viewCategory);
 router.get('/maps', (req, res, next) => {
