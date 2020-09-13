@@ -171,7 +171,7 @@ exports.bookingDetails = (req, res) => {
 };
 //Borrar una reserva
 exports.deleteBooking = (req, res) => {
-  console.log(req.user)
+  console.log('Este es el booking a borrar:',req.params.bookingId)
   const bookingId = req.params.bookingId;
   const sessionUser = req.session.currentUser || req.user;
   Booking.findById(bookingId).then((booking) => {
