@@ -3,10 +3,14 @@ const router  = express.Router();
 const propertyController = require('../controllers/property.controllers');
 const uploadCloud = require('../config/cloudinary.js');
 
+// GET home page
+router.get('/', propertyController.allProperties);
+//Consulta de locales por Categoría
+router.get('/category/:name', propertyController.viewCategory);
 //Creación de un local
 router.post('/create-property', propertyController.registerProperty);
 //Ver detalles de un local
-router.get('/:propertyId', propertyController.viewProperty);
+router.get('/details/:propertyId', propertyController.viewProperty);
 //Edición de un local
 router.post('/edit/:propertyId', uploadCloud.single('main'), propertyController.saveProperty);
 //Borrar un local

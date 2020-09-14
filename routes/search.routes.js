@@ -7,11 +7,9 @@ const unidecode = require('unidecode')
 //Búsqueda de resultados
 router.post('/getAvailability', searchController.searchResults);
 //Consulta de disponibilidad en un Local
-router.post('/property/:propertyId', searchController.bookingDay);
-//Consulta de locales por Categoría
-router.get('/category/:name', searchController.viewCategory);
+router.post('/getAvailability/:propertyId', searchController.bookingDay);
 router.get('/maps', (req, res, next) => {
-    console.log(req.query.search)
+    console.log('This is the query: ',req.query.search)
     const search = unidecode(req.query.search)
     const path = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json"
     const queryParams = "inputtype=textquery&fields=formatted_address,name,geometry,place_id"

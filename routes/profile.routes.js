@@ -18,5 +18,7 @@ router.get("/my-favourites", profileController.myFavourites);
 router.get("/profile/delete", profileController.deleteAccount);
 //Mandar mensaje
 router.post("/send-message/:clientId", profileController.sendMessage);
+//Borrar mensaje
+router.post('/delete/:messageId', profileController.deleteMessage);
 
 module.exports = router;

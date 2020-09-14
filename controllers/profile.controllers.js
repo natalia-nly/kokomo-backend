@@ -149,3 +149,24 @@ exports.sendMessage = (req, res) => {
         res.status(200).json(customerUpdated);
     });
 };
+
+//Borrar un mensaje
+exports.deleteMessage= (req, res) => {
+    console.log('Este es el mensaje a borrar:',req.params.messageId)
+    const messageId = req.params.messageId;
+    const sessionUser =  req.user;
+    Customer.findByIdAndUpdate({
+      _id: sessionUser._id,
+    }, {
+      $pull: {
+        messages: {_id:{$eq:messageId}}},
+      
+    }).then(customer=> {
+        console.log('yess:', customer)
+        res.status(200).json(customer)
+      }).
+    
+    catch((error) => {
+        console.log("Error: ", error);
+      });
+  };

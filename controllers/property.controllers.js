@@ -4,6 +4,78 @@ const Customer = require("../models/customer.model");
 const dateFormat = require("dateformat");
 const passport = require("passport");
 
+
+
+//HOME
+exports.allProperties = (req, res, next) => {
+    const sessionUser = req.session.currentUser || req.user;
+    // Si hay usuario cogemos también los locales favoritos para marcarlos
+    if (sessionUser) {
+      const p1 = Customer.findById(sessionUser._id);
+      const p2 = Property.find();
+  
+      Promise.all([p1, p2])
+        .then((results) => {
+          const favourites = results[0].favourites;
+          const properties = results[1];
+          
+  
+          let finalResult = [properties, favourites]
+          console.log("RESULTADO: ", finalResult)
+  
+          res.status(200).json(finalResult);
+  
+          return;
+        })
+        .catch((error) => {
+          console.log("Error while getting the properties from the DB: ", error);
+        });
+    } else {
+      // si no hay usuario cargamos solamente los locales
+      Property.find()
+        .then((properties) => {
+          console.log("ENTRANDO DESDE SOLO PROPERTIES")
+          let finalResult = [properties, []]
+          res.status(200).json(finalResult);
+        })
+        .catch((error) => {
+          console.log("Error while getting the properties from the DB: ", error);
+        });
+    }
+  };
+
+  //Búsqueda de locales por Categoría
+exports.viewCategory = (req, res) => {
+    const sessionUser = req.session.currentUser || req.user;
+    if (sessionUser) {
+      Property.find({
+          categories: req.params.name
+        })
+        .then((properties) => {
+          const allProperties = properties
+          const favourites = sessionUser.favourites
+          const finalResult = [allProperties, favourites]
+          res.status(200).json(finalResult)
+        })
+        .catch((error) => {
+          console.log("Error: ", error);
+        });
+    } else {
+      Property.find({
+          categories: req.params.name
+        })
+        .then((properties) => {
+          const allProperties = properties
+          const finalResult = [allProperties]
+          res.status(200).json(finalResult)
+        })
+        .catch((error) => {
+          console.log("Error: ", error);
+        });
+    }
+  
+  };
+
 //Función creadora de Schedules para un local
 function createSchedule(property) {
     const timeRanges = property.openingHours;
@@ -55,6 +127,9 @@ function createSchedule(property) {
                                 .timeBoxes
                                 .push(timeBox);
                             startTime = t + rest;
+                            if(startTime -Math.floor(startTime) >= 0.6) {
+                                startTime = startTime + 1 + (startTime -Math.floor(startTime));
+                            }
                         }
                     });
                 newSchedule = JSON.parse(JSON.stringify(scheduleObject));
@@ -76,7 +151,7 @@ function createSchedule(property) {
 exports.registerProperty = (req, res, next) => {
     console.log('this is req', req)
     console.log('this is the property body', req.body);
-    const data = req.body.body
+    const data = req.body
     const workingDays = [];
     if (data.openingHours[0].weekDays.includes(1)) {
         workingDays.push(1);
