@@ -74,34 +74,3 @@ exports.bookingDay = (req, res, next) => {
       console.log("Error: ", error);
     });
 };
-//Búsqueda de locales por Categoría
-exports.viewCategory = (req, res) => {
-  const sessionUser = req.session.currentUser || req.user;
-  if (sessionUser) {
-    Property.find({
-        categories: req.params.name
-      })
-      .then((properties) => {
-        const allProperties = properties
-        const favourites = sessionUser.favourites
-        const finalResult = [allProperties, favourites]
-        res.status(200).json(finalResult)
-      })
-      .catch((error) => {
-        console.log("Error: ", error);
-      });
-  } else {
-    Property.find({
-        categories: req.params.name
-      })
-      .then((properties) => {
-        const allProperties = properties
-        const finalResult = [allProperties]
-        res.status(200).json(finalResult)
-      })
-      .catch((error) => {
-        console.log("Error: ", error);
-      });
-  }
-
-};

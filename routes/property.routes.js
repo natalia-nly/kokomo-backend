@@ -3,6 +3,10 @@ const router  = express.Router();
 const propertyController = require('../controllers/property.controllers');
 const uploadCloud = require('../config/cloudinary.js');
 
+// GET home page
+router.get('/', propertyController.allProperties);
+//Consulta de locales por Categoría
+router.get('/category/:name', propertyController.viewCategory);
 //Creación de un local
 router.post('/create-property', propertyController.registerProperty);
 //Ver detalles de un local

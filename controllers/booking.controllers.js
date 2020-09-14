@@ -192,7 +192,7 @@ exports.deleteBooking = (req, res) => {
       bookings: bookingId,
     },
   });
-  const p3 = Property.findOneAndUpdate({}, {
+  const p3 = Property.findOneAndUpdate({bookings:{$in:[bookingId]}}, {
     $pull: {
       bookings: bookingId,
     },
