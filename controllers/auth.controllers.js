@@ -158,9 +158,22 @@ exports.logout = (req, res) => {
 exports.loggedIn = (req, res) => {
   // req.isAuthenticated() is defined by passport
   if (req.isAuthenticated()) {
-    console.log('result isAuthenticated',req)
+    console.log('result isAuthenticated',req.user)
     res.status(200).json(req.user);
     return;
   }
   res.status(403).json({ message: 'Unauthorized' });
+};
+
+//Info user
+exports.infoUser = (req, res) => {
+  // req.isAuthenticated() is defined by passport
+  Customer.findById(req.user._id).populate({
+    path: 'ownProperties',
+    path: 'bookings'
+  })
+  .then(user => {
+    res.status(200).json(user);
+    return;
+  }).catch(error => next(error));
 };

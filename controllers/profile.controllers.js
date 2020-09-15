@@ -26,12 +26,10 @@ exports.profile = (req, res, next) => {
 exports.profileEdit = (req, res, next) => {
     const sessionUser = req.session.currentUser || req.user;
     Customer.findById(sessionUser._id).then(user => {
-        res.render('customer/edit', {
-            user,
-            title: 'Editar mi perfil | KOKOMO'
-        });
+        res.status(200).json(user)
     }).catch(error => next(error));
 };
+
 //Editar la contraseña
 exports.profilePasswordChange = (req, res, next) => {
     const sessionUser = req.session.currentUser || req.user;
@@ -77,21 +75,15 @@ exports.profilePasswordChange = (req, res, next) => {
 //Editar el teléfono
 exports.profileTelephoneChange = (req, res, next) => {
     const sessionUser = req.session.currentUser || req.user;
-    const {
-        id,
-        newTelephone
-    } = req.body;
-    Customer.findByIdAndUpdate(id, {
-            telNumber: newTelephone
+
+    console.log("BODY DEL TELEPHONE: ", req.body)
+    Customer.findByIdAndUpdate(req.user._id, {
+            telNumber: req.body.telNumber
         }, {
             new: true
         })
         .then(resultado => {
-            res.render('customer/edit', {
-                user: sessionUser,
-                title: 'Editar mi perfil | KOKOMO',
-                infoMessage: '¡Número de Teléfono cambiado! ✌️'
-            });
+            res.status(200).json(sessionUser)
         }).catch(error => next(error));
 };
 //Añadir etiqueta owner
@@ -101,11 +93,7 @@ exports.profileOwnerAdd = (req, res, next) => {
         new: true
       })
       .then(resultado => {
-        res.render('owner/profile', {
-          user: sessionUser,
-          title: 'Editar mi perfil | KOKOMO',
-          infoMessage: '¡Ya estás regustrado como propietario! ✌️'
-        });
+          res.status(200).json(sessionUser)
       }).catch(error => next(error));
   };
 //Ver favoritos

@@ -9,9 +9,9 @@ router.get("/profile/edit", profileController.profileEdit);
 //Editar la contraseña
 router.post("/profile/editPassword", profileController.profilePasswordChange);
 //Editar el teléfono
-router.post("/profile/editTelephone", profileController.profileTelephoneChange);
+router.post("/editTelephone", profileController.profileTelephoneChange);
 //Añadir owner
-router.post("/profile/add-owner", profileController.profileOwnerAdd);
+router.post("/add-owner", profileController.profileOwnerAdd);
 //Ver los favoritos
 router.get("/my-favourites", profileController.myFavourites);
 //Borrar cuenta
