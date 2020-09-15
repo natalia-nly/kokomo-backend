@@ -16,6 +16,8 @@ router.post("/login", authController.login);
 router.post("/logout", authController.logout);
 // GET comprobar si está loggeado
 router.get('/loggedin', authController.loggedIn);
+// GET ver toda la info del user
+router.get('/info-user', authController.infoUser);
 // LOGIN SOCIAL
 router.get(
   "/google",
