@@ -167,12 +167,15 @@ exports.loggedIn = (req, res) => {
 
 //Info user
 exports.infoUser = (req, res) => {
+  console.log('user_id: ',req.user._id)
   // req.isAuthenticated() is defined by passport
+
   Customer.findById(req.user._id).populate('ownProperties').populate('bookings')
   .then(user => {
     console.log(user)
     res.status(200).json(user);
     return;
-  }).catch(error => next(error));
+    
+  }) .catch(error => next(error));
   
 };
