@@ -143,28 +143,10 @@ exports.login = (req, res, next) => {
    })(req, res, next)
 }
 
-//LogOut
-exports.logout = (req, res) => {
-   req.logout()
-   res.status(200).json({ message: 'Log out success!' })
-}
-
-//LoggedIn
-exports.loggedIn = (req, res) => {
-   // req.isAuthenticated() is defined by passport
-   if (req.isAuthenticated()) {
-      console.log('result isAuthenticated', req.user)
-      res.status(200).json(req.user)
-      return
-   }
-   res.status(403).json({ message: 'Unauthorized' })
-}
-
 //Info user
 exports.infoUser = (req, res) => {
    console.log('user_id: ', req.user._id)
    // req.isAuthenticated() is defined by passport
-
    Customer.findById(req.user._id)
       .populate('ownProperties')
       .populate('bookings')
