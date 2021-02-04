@@ -2,7 +2,6 @@ const Customer = require('../models/customer.model')
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 const saltRounds = 10
-const passport = require('passport')
 
 //Creación de Avatar Random
 const randomAvatar = () => {
@@ -16,7 +15,7 @@ const randomAvatar = () => {
    return avatarArr[Math.floor(Math.random() * 5)]
 }
 //Registrar el customer en BBDD
-exports.registerCustomer = (req, res, next) => {
+exports.registerCustomer = (req, res) => {
    console.log(req.body)
    const { username, telNumber, email, password } = req.body
    if (!username || !email || !password) {
@@ -113,34 +112,30 @@ exports.registerOwner = (req, res, next) => {
       })
 }
 
-//Logearse
-exports.login = (req, res, next) => {
-   console.log(req.body)
-   passport.authenticate('local', (err, theUser, failureDetails) => {
-      if (err) {
-         res.status(500).json({
-            message: 'Something went wrong authenticating user'
-         })
-         return
-      }
+exports.login = async (req, res) => {
+   try {
+      const { username, password } = req.body
+      if (!username || !password)
+         return res.status(400).send('DNI and username are mandatory.')
 
-      if (!theUser) {
-         // "failureDetails" contains the error messages
-         // from our logic in "LocalStrategy" { message: '...' }.
-         res.status(401).json(failureDetails)
-         return
-      }
+      const user = await Customer.findOne({ username })
 
-      // save user in session
-      req.login(theUser, (err) => {
-         if (err) {
-            res.status(500).json({ message: 'Session save went bad.' })
-            return
-         }
-         // We are now logged in (that's why we can also send req.user)
-         res.status(200).json(theUser)
-      })
-   })(req, res, next)
+      if (!user)
+         return res
+            .status(404)
+            .send('El usuario o la contraseña son incorrectos')
+
+      const correctPassword = await bcrypt.compareSync(
+         password,
+         user.passwordHash
+      )
+
+      if (!correctPassword) return res.status(401).send('Contraseña incorrecta')
+
+      return res.status(200).json(user)
+   } catch (error) {
+      console.log(error)
+   }
 }
 
 //Info user
@@ -151,7 +146,6 @@ exports.infoUser = (req, res) => {
       .populate('ownProperties')
       .populate('bookings')
       .then((user) => {
-         console.log(user)
          res.status(200).json(user)
          return
       })
