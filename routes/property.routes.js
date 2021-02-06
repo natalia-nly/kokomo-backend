@@ -8,13 +8,13 @@ router.get('/', propertyController.allProperties);
 //Consulta de locales por Categoría
 router.get('/category/:name', propertyController.viewCategory);
 //Creación de un local
-router.post('/create-property', propertyController.registerProperty);
+router.post('/new', propertyController.registerProperty);
 //Ver detalles de un local
-router.get('/details/:propertyId', propertyController.viewProperty);
+router.get('/:propertyId', propertyController.viewProperty);
 //Edición de un local
-router.post('/edit/:propertyId', uploadCloud.single('main'), propertyController.saveProperty);
+router.put('/:propertyId', uploadCloud.single('main'), propertyController.saveProperty);
 //Borrar un local
-router.get('/delete/:propertyId', propertyController.deleteProperty);
+router.delete('/:propertyId', propertyController.deleteProperty);
 //Añadir a favoritos un local
 router.get('/love/:propertyId', propertyController.loveProperty);
 //Añadir comentarios a un local

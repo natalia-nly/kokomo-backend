@@ -2,8 +2,6 @@ const express = require('express');
 const router  = express.Router();
 const profileController = require('../controllers/profile.controllers');
 
-// GET de la ruta profile del customer
-router.get("/profile", profileController.profile);
 //Editar la contraseña
 router.post("/profile/editPassword", profileController.profilePasswordChange);
 //Editar el teléfono
