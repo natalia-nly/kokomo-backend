@@ -1,52 +1,42 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
-const propertySchema = new Schema({
-    name: String,
-    description: String,
-    categories: {
-        type: [String],
-        enum: ["Chillout", "Surfer", "Restaurante", "Discoteca", "Bar"],
-        default: "Sin categoría"
-    },
-    mainImage: String,
-    media: [String],
-    location: {
-        name: String,
-        lat: Number,
-        long: Number
-    },
-    openingHours: [{
-         openingDays: {
-            openingDay: Date,
-            closingDay: Date
-        },
-       weekDays: [Number],
-        openingTimes: [{
-            openingTime: Number,
-            closingTime: Number
-        }]
-    }],
-    bookingDuration: Number,
-    availablePlaces: Number,
-    comments: [{
-        username: String,
-        avatar: String,
-        comment: String
-    }],
-    rating: {
-        counter: [Number],
-        rating: Number
-    },
-    bookings: [{type: Schema.Types.ObjectId, ref: "Booking"}]
-}, {
-    timestamps: {
-        createdAt: 'createdAt',
-        updatedAt: 'updatedAt'
-    }
-});
+const propertySchema = new Schema(
+   {
+      name: { type: String },
+      owner: { type: Schema.Types.ObjectId, ref: 'Customer' },
+      description: { type: String },
+      categories: [{ type: String }],
+      mainImage: { type: String },
+      media: [{ type: String }],
+      location: {
+         name: { type: String },
+         lat: { type: Number },
+         long: { type: Number }
+      },
+      availablePlaces: { type: Number },
+      weekDays: [{ type: String }],
+      timeRanges: [{ start: String, end: String }],
+      comments: [
+         {
+            user: { type: Schema.Types.ObjectId, ref: 'Customer' },
+            comment: { type: String }
+         }
+      ],
+      rating: {
+         counter: [{ type: Number }],
+         rating: { type: Number }
+      },
+      bookings: [{ type: Schema.Types.ObjectId, ref: 'Booking' }]
+   },
+   {
+      timestamps: {
+         createdAt: 'createdAt',
+         updatedAt: 'updatedAt'
+      }
+   }
+)
 
+const Property = mongoose.model('Property', propertySchema)
 
-const Property = mongoose.model("Property", propertySchema);
-
-module.exports = Property;
+module.exports = Property

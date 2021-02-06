@@ -114,11 +114,11 @@ exports.registerOwner = (req, res, next) => {
 
 exports.login = async (req, res) => {
    try {
-      const { username, password } = req.body
-      if (!username || !password)
-         return res.status(400).send('DNI and username are mandatory.')
+      const { email, password } = req.body
+      if (!email || !password)
+         return res.status(400).send('Email and password are mandatory.')
 
-      const user = await Customer.findOne({ username })
+      const user = await Customer.findOne({ email })
 
       if (!user)
          return res
@@ -139,15 +139,13 @@ exports.login = async (req, res) => {
 }
 
 //Info user
-exports.infoUser = (req, res) => {
-   console.log('user_id: ', req.user._id)
-   // req.isAuthenticated() is defined by passport
-   Customer.findById(req.user._id)
-      .populate('ownProperties')
-      .populate('bookings')
-      .then((user) => {
-         res.status(200).json(user)
-         return
-      })
-      .catch((error) => next(error))
+exports.infoUser = async (req, res) => {
+   try {
+      const user = await Customer.findById(req.params.userId).populate(
+         'ownProperties bookings'
+      )
+      return res.status(200).json(user)
+   } catch (error) {
+      console.log(error)
+   }
 }

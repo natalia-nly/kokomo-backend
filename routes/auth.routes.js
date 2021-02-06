@@ -9,8 +9,6 @@ router.post("/signup", authController.registerCustomer);
 router.post("/signup-local", authController.registerOwner);
 //POST de la ruta login
 router.post("/login", authController.login);
-// GET ver toda la info del user
-router.get('/info-user', authController.infoUser);
 // LOGIN SOCIAL
 router.get(
   "/google",
@@ -28,5 +26,7 @@ router.get(
     failureRedirect: process.env.FRONT_URL + "/login", // hacia dónde debe ir si falla?
   })
 );
+// GET ver toda la info del user
+router.get('/:userId', authController.infoUser);
 
 module.exports = router;

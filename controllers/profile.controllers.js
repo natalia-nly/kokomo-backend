@@ -2,26 +2,7 @@ const Customer = require("../models/customer.model");
 const bcrypt = require("bcryptjs");
 const saltRounds = 10;
 
-//Mostrar el profile
-exports.profile = (req, res, next) => {
-    const sessionUser = req.session.currentUser || req.user;
-    Customer.findById(sessionUser._id)
-        .populate('ownProperties')
-        .then((user) => {
-            if (user.owner) {
-                res.render("owner/profile", {
-                    user,
-                    title: "Mi perfil | KOKOMO",
-                });
-            } else {
-                res.render("customer/profile", {
-                    user,
-                    title: "Mi perfil | KOKOMO",
-                });
-            }
-        })
-        .catch((error) => next(error));
-};
+
 //Formulario edición del profile
 exports.profileEdit = (req, res, next) => {
     const sessionUser = req.session.currentUser || req.user;

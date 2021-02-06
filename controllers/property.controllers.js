@@ -148,7 +148,7 @@ function createSchedule(property) {
    })
 }
 //POST Creación del local
-exports.registerProperty = (req, res, next) => {
+exports.registerPropertyOLD = (req, res) => {
    console.log('this is req', req)
    console.log('this is the property body', req.body)
    const data = req.body
@@ -232,8 +232,25 @@ exports.registerProperty = (req, res, next) => {
       res.status(200).json(property)
    })
 }
+
+exports.registerProperty = async (req, res) => {
+   try {
+      const newProperty = await Property.create(req.body)
+      await Customer.findByIdAndUpdate(req.body.owner, {
+         $push: {
+            ownProperties: newProperty._id
+         }
+      })
+
+      return res.status(200).json(newProperty)
+   } catch (error) {
+      console.log(error)
+      res.status(500).send(error)
+   }
+}
+
 //Ver detalle del local
-exports.viewProperty = (req, res, next) => {
+exports.viewPropertyOLD = (req, res, next) => {
    console.log('Hola', req.isAuthenticated())
    console.log(req.params)
 
@@ -338,6 +355,15 @@ exports.viewProperty = (req, res, next) => {
    }
 }
 
+exports.viewProperty = async (req, res) => {
+   try {
+      const property = await Property.findById(req.params.propertyId)
+      return res.status(200).json(property)
+   } catch (error) {
+      console.log(error)
+      res.status(500).send(error)
+   }
+}
 //Guardar cambios del local
 exports.saveProperty = (req, res, next) => {
    console.log(req.body)
