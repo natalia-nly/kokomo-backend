@@ -1,20 +1,20 @@
-const cloudinary = require('cloudinary').v2;
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
-const multer = require('multer');
+const cloudinary = require('cloudinary').v2
+const { CloudinaryStorage } = require('multer-storage-cloudinary')
+const multer = require('multer')
 
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_NAME,
-  api_key: process.env.CLOUDINARY_KEY,
-  api_secret: process.env.CLOUDINARY_SECRET
-});
+   cloud_name: process.env.CLOUDINARY_NAME,
+   api_key: process.env.CLOUDINARY_KEY,
+   api_secret: process.env.CLOUDINARY_SECRET
+})
 
 const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  folder: 'kokomo-react',
-  allowedFormats: ['jpg', 'png'],
-  filename: function (req, res, cb) {
-    cb(null, res.originalname); // The file on cloudinary would have the same name as the original file name
-  }
-});
+   cloudinary,
+   params: {
+      folder: 'kokomo-react', // Carpeta en Cloudinary
+      format: async (req, file) => 'png',
+      public_id: (req, file) => file.originalname
+   }
+})
 
-module.exports = multer({ storage: storage });
+module.exports = multer({ storage })
