@@ -7,7 +7,6 @@ const propertySchema = new Schema(
       owner: { type: Schema.Types.ObjectId, ref: 'Customer' },
       description: { type: String },
       categories: [{ type: String }],
-      mainImage: { type: String },
       media: [{ type: String }],
       location: {
          name: { type: String },
@@ -23,11 +22,9 @@ const propertySchema = new Schema(
             comment: { type: String }
          }
       ],
-      rating: {
-         counter: [{ type: Number }],
-         rating: { type: Number }
-      },
-      bookings: [{ type: Schema.Types.ObjectId, ref: 'Booking' }]
+      rating: [{ type: Number }],
+      bookings: [{ type: Schema.Types.ObjectId, ref: 'Booking' }],
+      active: { type: Boolean, default: true }
    },
    {
       timestamps: {

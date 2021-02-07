@@ -7,9 +7,8 @@ const bookingSchema = new Schema(
       property: { type: Schema.Types.ObjectId, ref: 'Property' },
       active: { type: Boolean, default: true },
       bookingRef: String,
-      day: String,
-      time: String,
-      timeBox: { type: Schema.Types.ObjectId },
+      day: {type: Date},
+      timeRange: [{start: String, end: String}],
       guests: Number
    },
    {
